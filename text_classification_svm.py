@@ -38,14 +38,7 @@ def main():
     print("\n ---------- Ingesting Data ---------- \n")
     appleTweetsdf = pd.read_csv(appleTweets_folder)
     
-    print("\n ---------- Reformatting Some of the Target Labels ---------- \n")
-    ## Make a function that transforms {-1, 0, 1} to {Negative, Neutral, Postitive}
-    
-    # fires_monthly_df = set_fire_months(fires_monthly_df, "Month") # returns df with added column "Season"
-    
-    # news_headlines_df_selected = news_headlines_df[news_headlines_df['LABEL'].isin(["wildfire", "weather"])]
-    # news_headlines_df_selected2 = news_headlines_df[news_headlines_df['LABEL'].isin(["burn", "weather"])]
-    # news_headlines_df2 = set_new_generic_label(news_headlines_df, "LABEL")
+    # print("\n ---------- Reformatting Some of the Target Labels ---------- \n")
     
    
     print("\n\n ---------- Selecting Train and Test Data ---------- \n")
@@ -54,23 +47,9 @@ def main():
     print("\n\n ---------- SVM  ---------- \n")
     run_svm(appleTweets_sample_dict, appleTweets_filename)
     
-    
-     
     # print("\n\n ---------- Further Visuals ---------- \n")
-    # months = ["January","February","March","April","May","June","July", "August","September","October","November","December"]
-    # label_counts(fires_monthly_dict_pred, us_fires_burn_monthly_filename, months)
     # label_counts(fires_season_dict_pred, f"{us_fires_burn_monthly_filename}_season")
-    
-    # label_counts(news_dict_pred, news_headlines_vector_filename)
-    # label_counts(news2_dict_pred,  f"{news_headlines_vector_filename}_2")
-    # label_counts(news_dict_select_pred, f"{news_headlines_vector_filename}_wildfires_weather")
-    # label_counts(news_dict_select2_pred, f"{news_headlines_vector_filename}_burn_weather")
-    
-    # label_counts(or_dict_cause_pred, or_weather_wildfires_comments_vector_filename)
-    # label_counts(or_dict_specific_pred, or_weather_wildfires_specific_vector_filename)
-    # label_counts(or_dict_pred, or_weather_wildfires_filename, ["A", "B", "C", "D", "E", "F", "G"])
-    # label_counts(or_dict_balanced_pred, f"{or_weather_wildfires_filename}_balanced")
-   
+
 
 def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_size=0.5, seed_val=1):
 
@@ -90,7 +69,6 @@ def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_s
     }
     
     return sample_dict
-
 
 
 def label_counts(data_dict, filename, order=None):
@@ -181,10 +159,6 @@ def run_svm(sample_dict, filename, visual_folder="./CreatedVisuals/svm"):
 
     SVM_Model1=LinearSVC(C=50, dual="auto")
     SVM_Model1.fit(train_df, train_labels)
-
-    # print("SVM 1 prediction:\n", SVM_Model1.predict(test_df))
-    # print("Actual:")
-    # print(test_labels)
     
     score = accuracy_score(test_labels, SVM_Model1.predict(test_df))
     print(f"\nThe accurary is for Linear SVM {filename} is : {score}\n")
@@ -211,10 +185,6 @@ def run_svm(sample_dict, filename, visual_folder="./CreatedVisuals/svm"):
     SVM_Model2=sklearn.svm.SVC(C=1.0, kernel='rbf', gamma="auto")
     SVM_Model2.fit(train_df, train_labels)
 
-    # print("SVM prediction:\n", SVM_Model2.predict(test_df))
-    # print("Actual:")
-    # print(test_labels)
-    
     score = accuracy_score(test_labels, SVM_Model2.predict(test_df))
     print(f"\nThe accurary is for rbf SVM {filename} is : {score}\n")
 
@@ -240,10 +210,6 @@ def run_svm(sample_dict, filename, visual_folder="./CreatedVisuals/svm"):
         print("--- Starting Poly ---")
         SVM_Model3=sklearn.svm.SVC(C=1, kernel='poly', degree=d, gamma="scale")
         SVM_Model3.fit(train_df, train_labels)
-
-        # print("SVM prediction:\n", SVM_Model3.predict(test_df))
-        # print("Actual:")
-        # print(test_labels)
         
         score = accuracy_score(test_labels, SVM_Model3.predict(test_df))
         print(f"\nThe accurary is for poly {d} SVM {filename} is : {score}\n")
