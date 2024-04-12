@@ -58,7 +58,7 @@ MyCountV=CountVectorizer(
     input="content",                                                                        # because we have a csv file
     lowercase=True,                                                                         # make all words lower case
     stop_words = "english",                                                                 # remove stop words
-    max_features=100                                                                        # maximum number of unique words
+    max_features=5000                                                                        # maximum number of unique words
     )
 
 MyDTM = MyCountV.fit_transform(tweetsLIST)                                                  # create a sparse matrix
