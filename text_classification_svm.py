@@ -59,7 +59,11 @@ def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_s
         df2 = df[cols_of_interst_plus_label]
     
     rd.seed(seed_val)
-    train_df, test_df, train_labels, test_labels = train_test_split(df2.drop(label_col, axis=1), df2[label_col], test_size=test_size, stratify=df2[label_col])
+    train_df, test_df, train_labels, test_labels = train_test_split(
+        df2.drop(label_col, axis=1), 
+        df2[label_col], 
+        test_size=test_size, 
+        stratify=df2[label_col])
     
     sample_dict = {
         "train_labels" : train_labels,
@@ -69,83 +73,6 @@ def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_s
     }
     
     return sample_dict
-
-
-def label_counts(data_dict, filename, order=None):
-        
-    label_counts_pred = Counter(list(data_dict["naive_pred"]))
-    label_counts_test = Counter(list(data_dict["test_labels"]))
-    label_counts_train = Counter(list(data_dict["train_labels"]))
-    
-    labels_pred = list(label_counts_pred.keys())
-    values_pred = list(label_counts_pred.values())
-    
-    labels_test = list(label_counts_test.keys())
-    values_test = list(label_counts_test.values())
-    
-    labels_train = list(label_counts_train.keys())
-    values_train = list(label_counts_train.values())
-    
-    total_pred = sum(values_pred)
-    total_test = sum(values_test)
-    total_train = sum(values_train)
-
-    percentages_pred = [(value / total_pred) for value in values_pred]
-    percentages_test = [(value / total_test) for value in values_test]
-    percentages_train = [(value / total_train) for value in values_train]
-    
-    labels = list(set(labels_pred + labels_test + labels_train))
-    
-    pred_df = pd.DataFrame({
-        "Label" : labels_pred,
-        "Predicted" : percentages_pred
-    })
-    
-    test_df = pd.DataFrame({
-        "Label" : labels_test,
-        "Test" : percentages_test
-    })
-    
-    train_df = pd.DataFrame({
-        "Label" : labels_train,
-        "Train" : percentages_train
-    })
-
-    merged_df = train_df.merge(test_df, on='Label', how='outer').merge(pred_df, on='Label', how='outer')
-    merged_df = merged_df.fillna(0)
-    
-    if order is not None:
-        # print(order)
-        merged_df['Label'] = pd.Categorical(merged_df['Label'], categories=order, ordered=True)
-        merged_df = merged_df.sort_values(by='Label')
-        # print(merged_df)
-    
-    plt.figure(figsize=(28, 10))
-    ax = merged_df.plot(x="Label", y=["Test", "Predicted"], kind="bar", rot=0, color=["#364659", "#6C90D9"])
-    plt.xticks(rotation=90, ha='right')
-    plt.xlabel('\nLabel')
-    plt.ylabel('Portion of Data with that Label\n')
-    plt.title(f'Comparison of SVM Predictions and Actual Label Proportions\n{filename}')
-    plt.legend(loc='upper left', bbox_to_anchor=(1, 1)) 
-    
-    plt.tight_layout()   
-    plt.savefig(f"./CreatedVisuals/svm/label_counts/{filename}_test_v_pred.png", dpi=300)
-    plt.close()
-    
-    
-    
-    threshold = 1/len(list(set(labels)))
-    plt.figure(figsize=(20, 10))
-    ax = merged_df.plot(x="Label", y=["Train"], kind="bar", rot=0, color=["#8EA3BF"])
-    plt.axhline(y=threshold, color='#D9CDBF', linestyle='--', label='Even Distribution')
-    plt.xticks(rotation=90, ha='right')
-    plt.xlabel('\nLabel')
-    plt.ylabel('Portion of Data with that Label\n')
-    plt.title(f'Proportion of Labels in the Training Set\n{filename}')
-    
-    plt.tight_layout()    
-    plt.savefig(f"./CreatedVisuals/svm/label_counts/{filename}_train.png", dpi=300)
-    plt.close()
 
 
 def run_svm(sample_dict, filename, visual_folder="./CreatedVisuals/svm"):
