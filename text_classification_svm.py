@@ -51,7 +51,7 @@ def main():
     # label_counts(fires_season_dict_pred, f"{us_fires_burn_monthly_filename}_season")
 
 
-def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_size=0.5, seed_val=1):
+def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_size=0.2, seed_val=1):
 
     if cols_of_interst_plus_label is None:
         df2 = df.copy()

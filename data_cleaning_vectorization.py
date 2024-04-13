@@ -40,6 +40,7 @@ def basket_word_column(df):
 
 ## Tokenize and Vectorize the Apple Tweet Sentiments
 
+print("Reading in data")
 RAW_DF=pd.read_csv("./Data/Apple.csv", error_bad_lines=False)
 
 text_df = RAW_DF.copy()    
@@ -53,14 +54,16 @@ for nexttweet, nextlabel in zip(text_df["tweets"], text_df["labels"]):
 
 ### Vectorize
 
+print("Intializing Count Vectorizor")
 ## Instantiate your CV
 MyCountV=CountVectorizer(
     input="content",                                                                        # because we have a csv file
     lowercase=True,                                                                         # make all words lower case
     stop_words = "english",                                                                 # remove stop words
-    max_features=5000                                                                        # maximum number of unique words
+    max_features=7000                                                                        # maximum number of unique words
     )
 
+print("Fitting Count Vectorizer")
 MyDTM = MyCountV.fit_transform(tweetsLIST)                                                  # create a sparse matrix
 
 ColumnNames = MyCountV.get_feature_names_out()
@@ -75,11 +78,13 @@ appleTweets_Labeled.drop(columns=['aapl', 'apple'], inplace=True)
 
 appleTweets_basket = basket_word_column(appleTweets_Labeled)                                # basketize the words - good for association rule mining
 
+print("Saving the CSVs")
 appleTweets_Labeled.to_csv(f"./Data/appleTweets_vectorized.csv", index=False)
 appleTweets_basket.to_csv(f"./Data/appleTweets_basket.csv", index=False)
 
 ## Word Cloud
 
+print("Creating the Word Clouds")
 # Iterate over unique labels
 for label in appleTweets_Labeled['labels'].unique():
     filtered_df = appleTweets_Labeled[appleTweets_Labeled['labels'] == label]               # Filter the DataFrame for the current label
@@ -91,5 +96,6 @@ for label in appleTweets_Labeled['labels'].unique():
     plt.title('Word Cloud for Label ' + str(label))
     plt.axis('off')
     plt.savefig(f"./CreatedVisuals/WordCloud/wordCloud_{label}.png", dpi = 300)
+    plt.close()
 
 print("Made it out alive")
