@@ -32,7 +32,7 @@ appleTweets_filename = "AppleTweets"
 
 def main():
     '''
-    This is the main function for the decision tree modeling and visualizations on wildfire data
+    This is the main function for the SVM modeling and visualizations on Apple Sentiment Data
     '''
     
     print("\n ---------- Ingesting Data ---------- \n")
@@ -46,9 +46,6 @@ def main():
     
     print("\n\n ---------- SVM  ---------- \n")
     run_svm(appleTweets_sample_dict, appleTweets_filename)
-    
-    # print("\n\n ---------- Further Visuals ---------- \n")
-    # label_counts(fires_season_dict_pred, f"{us_fires_burn_monthly_filename}_season")
 
 
 def setup_train_test_data(df, label_col, cols_of_interst_plus_label=None, test_size=0.2, seed_val=1):
